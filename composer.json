@@ -1,6 +1,7 @@
 {
     "name": "korri/captchas",
-    "description": "",
+    "description": "Captcha abstraction layer",
+    "license": "MIT",
     "authors": [
         {
             "name": "Hugo Vacher",
