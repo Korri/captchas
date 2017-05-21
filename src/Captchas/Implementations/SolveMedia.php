@@ -5,15 +5,20 @@ use Guzzle\Http\Client;
 
 class SolveMedia implements CaptchaInterface
 {
-    public function __construct($c_key, $v_key = '', $h_key = '')
+    private $service;
+    private $canAnswer;
+    private $secure;
+
+    public function __construct($c_key, $v_key = '', $h_key = '', $secure = true)
     {
         $this->canAnswer = !empty($v_key);
         $this->service = new Service(new Client(), $c_key, $v_key, $h_key);
+        $this->secure = $secure;
     }
 
-    function getHtml($useSsl = false)
+    function getHtml()
     {
-        return $this->service->getHtml(null, $useSsl);
+        return $this->service->getHtml(null, $this->secure);
     }
 
     /**
@@ -30,7 +35,7 @@ class SolveMedia implements CaptchaInterface
         if (!isset($data['adcopy_challenge']) || !isset($data['adcopy_response'])) {
             return new Response(false, 'No challenge or adcopy field');
         }
-        $ip = $ip ? : $_SERVER['REMOTE_ADDR'];
+        $ip = $ip ?: $_SERVER['REMOTE_ADDR'];
         $response = $this->service->checkAnswer($ip, $data['adcopy_challenge'], $data['adcopy_response']);
 
         return new Response($response->valid(), $response->getMessage());
